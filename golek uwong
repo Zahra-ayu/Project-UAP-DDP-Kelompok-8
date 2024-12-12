@@ -1,6 +1,199 @@
+#include <ncurses/curses.h>
 #include <iostream>
-using namespace std;
-int main(){
+#include <fstream>
+#include <string>
+#include <windows.h>
 
-return 0
+
+
+using namespace std;
+void mainMenu(WINDOW *menu_win);
+string accountsFile = "ListAccount.txt";
+
+void loading(WINDOW *menu_win){
+	wclear(menu_win);
+	box(menu_win, 0, 0);
+mvprintw(11, 45, "Mohon Tunggu Sebentar...");
+          	start_color();
+			init_pair(1,COLOR_RED,COLOR_GREEN);
+			mvprintw(13, 30, "------------------------------------------------------");
+			mvprintw(14, 29, "|                                                      |");
+			mvprintw(15, 30, "------------------------------------------------------");
+			for(int jarak = 30; jarak<= 82; jarak++){
+			attron (COLOR_PAIR(1));
+			refresh();
+			mvprintw(14,jarak, " ");
+			Sleep(40);
+	
 }
+attroff(COLOR_PAIR(1));
+	clear();
+	refresh();
+	endwin();
+}
+
+const int LEVELS = 3;
+const int tinggiMAP[LEVELS] = {11, 21, 23};
+const int lebarMAP[LEVELS] = {11, 21, 29};
+int pemainX = 1, pemainY = 1;
+    int level_saatini = 0; 
+    
+char map[LEVELS][24][30] = {
+    {
+	"¦¦¦¦¦¦¦¦¦¦¦",
+    "¦ ¦     ! ¦",
+    "¦ ¦¦¦¦¦   ¦",
+    "¦ ¦+¦     ¦",
+    "¦ ¦ ¦ ¦ ¦ ¦",
+    "¦     ¦ ¦ ¦",
+    "¦¦¦¦¦¦¦ ¦ ¦",
+    "¦ ¦     ¦ ¦",
+    "¦ ¦ ¦ ¦ ¦ ¦",
+    "¦*  ¦     ¦",
+    "¦¦¦¦¦¦¦¦¦¦¦"
+	},
+    {
+    "¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦",
+    "¦     ¦             ¦",
+    "¦¦¦¦¦ ¦ ¦¦¦¦¦ ¦¦¦¦¦ ¦",
+    "¦   ¦ ¦  +¦   ¦     ¦",
+    "¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦¦¦¦¦",
+    "¦ ¦   ¦ ¦ ¦ ¦ ¦ ¦   ¦",
+    "¦ ¦¦¦¦¦¦¦¦¦ ¦ ¦ ¦ ¦ ¦",
+    "¦ ¦          !  ¦ ¦ ¦",
+    "¦ ¦ ¦¦¦¦¦¦¦ ¦¦¦¦¦¦¦ ¦",
+    "¦   ¦   ¦   ¦       ¦",
+    "¦¦¦¦¦¦¦¦¦ ¦ ¦ ¦ ¦ ¦ ¦",
+    "¦         ¦   ¦   ¦ ¦",
+    "¦ ¦¦¦¦¦ ¦ ¦ ¦ ¦ ¦ ¦¦¦",
+    "¦ ¦ ¦   ¦  &¦   ¦   ¦",
+    "¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦¦¦¦¦ ¦",
+    "¦ ¦     ¦ ¦ ¦ ¦$¦   ¦",
+    "¦ ¦¦¦¦¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦",
+    "¦   ¦#    ¦     ¦   ¦",
+    "¦ ¦ ¦ ¦ ¦ ¦¦¦¦¦¦¦¦¦ ¦",
+    "¦!¦                *¦",
+    "¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦"
+    },
+    {
+    "¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦",
+    "¦ ¦ ¦         ¦       ¦ ¦   ¦",
+    "¦ ¦ ¦ ¦¦¦¦¦ ¦ ¦ ¦¦¦¦¦ ¦ ¦ ¦ ¦",
+    "¦ ¦   ¦     ¦ ¦ ¦     ¦   ¦ ¦",
+    "¦ ¦¦¦ ¦ ¦¦¦¦¦ ¦ ¦ ¦¦¦¦¦ ¦¦¦ ¦",
+    "¦   ¦ ¦   ¦   ¦ ¦   ¦   ¦   ¦",
+    "¦¦¦ ¦ ¦¦¦ ¦ ¦¦¦ ¦¦¦ ¦¦¦¦¦ ¦ ¦",
+    "¦   ¦  $¦ ¦ ¦     ¦ ¦     ¦ ¦",
+    "¦ ¦¦¦¦¦¦¦ ¦ ¦¦¦¦¦ ¦ ¦ ¦¦¦¦¦ ¦",
+    "¦     ¦   ¦   ¦   ¦   ¦     ¦",
+    "¦¦¦¦¦ ¦ ¦¦¦¦¦ ¦ ¦¦¦¦¦¦¦ ¦¦¦¦¦",
+    "¦   ¦   ¦   ¦   ¦     ¦     ¦",
+    "¦ ¦ ¦¦¦¦¦ ¦ ¦¦¦¦¦ ¦ ¦¦¦¦¦¦¦ ¦",
+    "¦ ¦ ¦     ¦   ¦   ¦ ¦     ¦ ¦",
+    "¦¦¦ ¦ ¦¦¦ ¦ ¦¦¦ ¦ ¦¦¦ ¦ ¦ ¦ ¦",
+    "¦   ¦ ¦   ¦ ¦   ¦     ¦ ¦+¦ ¦",
+    "¦ ¦ ¦ ¦ ¦¦¦¦¦ ¦¦¦¦¦¦¦¦¦ ¦ ¦ ¦",
+    "¦ ¦ ¦ ¦   ¦   ¦       ¦ ¦ ¦ ¦",
+    "¦ ¦¦¦ ¦¦¦ ¦ ¦¦¦ ¦¦¦ ¦ ¦ ¦¦¦ ¦",
+    "¦ ¦   ¦ ¦ ¦ ¦*  ¦   ¦ ¦     ¦",
+    "¦ ¦ ¦¦¦ ¦ ¦ ¦¦¦¦¦ ¦¦¦ ¦¦¦¦¦¦¦",
+    "¦%      ¦         ¦      !  ¦",
+    "¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦"
+    }
+};
+
+
+
+void drawmap(int level) {
+    for (int y = 0; y < tinggiMAP[level]; ++y) {
+        for (int x = 0; x < lebarMAP[level]; ++x) {
+            if (y == pemainY && x == pemainX){
+                mvaddch(y, x, '@');
+				
+            }else{
+                mvaddch(y, x, map[level][y][x]);
+            
+            }
+        }
+    }
+}
+
+
+void movePlayer(int dx, int dy, int level) {
+    int newX = pemainX + dx;
+    int newY = pemainY + dy;
+
+ 
+    if (newY >= 0 && newY < tinggiMAP[level] && newX >= 0 && newX < lebarMAP[level] &&
+        (map[level][newY][newX] == ' ' || map[level][newY][newX] == '*')) {
+        pemainX = newX;
+        pemainY = newY;
+    }
+}
+
+void drawMenu(WINDOW *menu_win) {
+	mvwprintw(menu_win, 1, 30, "       _ _ _ _     _       _     "  );
+	mvwprintw(menu_win, 2, 30, "      () () |   | |     | |    ");  
+	mvwprintw(menu_win, 3, 30, " _ __  | || |__ | | __ | |_  ");  
+	mvwprintw(menu_win, 4, 30, "| '_ \\| | | | '_ \\| |/ ` | ' \\ ");  
+	mvwprintw(menu_win, 5, 30, "| |) | | | | | | | | (| | | | |");  
+	mvwprintw(menu_win, 6, 30, "| ./||||| |||\\,|| |_|");  
+	mvwprintw(menu_win, 7, 30, "| |                              ");  
+	mvwprintw(menu_win, 8, 30, "|_|                              ");  
+
+    mvwprintw(menu_win, 12, 35, "Pilih Level:");
+    mvwprintw(menu_win, 13, 35, "1. Level 1");
+    mvwprintw(menu_win, 14, 35, "2. Level 2");
+    mvwprintw(menu_win, 15, 35, "3. Level 3");
+    mvwprintw(menu_win, 16, 35, "Tekan 'q' untuk keluar");
+
+    wrefresh(menu_win);
+    
+    int ch;
+    bool running = true;
+
+    while (running) {
+        ch = wgetch(menu_win);
+        switch (ch) {
+            case '1': level_saatini = 0; running = false;  break;
+            case '2': level_saatini = 1; running = false;  break;
+            case '3': level_saatini = 2; running = false;  break;
+            case 'q': mainMenu(menu_win); 
+        }
+    }
+    clear();
+    refresh();
+    
+    bool gameRunning = true;
+    PlaySound(TEXT("C:\\Users\\admin\\Documents\\lagu5.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    	mvwprintw(menu_win, 9, 25, "------------------------------------------");
+        mvwprintw(menu_win, 10, 25, "          BANTU KAMI GOLEK UWONG          ");
+        mvwprintw(menu_win, 11, 25, "                 PLAYER = @              ");
+        mvwprintw(menu_win, 12, 25, "                 UWONG = *              ");
+        mvwprintw(menu_win, 13,25, "------------------------------------------");
+        mvwprintw(menu_win, 14,25, "      Tekan Apa Saja untuk melanjutkan");
+		wrefresh(menu_win);
+        wgetch(menu_win);
+        wclear(menu_win);
+        
+    while(gameRunning) {	
+        clear();
+    
+        drawmap(level_saatini);
+        
+         if (map[level_saatini][pemainY][pemainX] == '*') {
+         	PlaySound(TEXT("C:\\Users\\admin\\Documents\\lagu6.wav"), NULL, SND_FILENAME | SND_ASYNC);
+         	clear();
+            mvprintw(11, 42, "Anda telah menyelesaikan misi!");
+          	start_color();
+			init_pair(1,COLOR_RED,COLOR_GREEN);
+			mvprintw(13, 30, "------------------------------------------------------");
+			mvprintw(14, 29, "|                                                      |");
+			mvprintw(15, 30, "------------------------------------------------------");
+			for(int jarak = 30; jarak<= 82; jarak++){
+			attron (COLOR_PAIR(1));
+			refresh();
+			mvprintw(14,jarak, " ");
+			Sleep(40);
+	
+	}
