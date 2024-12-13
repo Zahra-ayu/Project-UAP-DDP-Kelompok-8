@@ -465,3 +465,78 @@ void mainMenu(WINDOW *menu_win) {
     mvwprintw(menu_win,5,28,"| |\\/| | |  __|   | . ` | | |  | |");
     mvwprintw(menu_win,6,28,"| |  | | | |____  | |\\  | | || |");
     mvwprintw(menu_win,7,28,"||  || || || \\|  \\/ ");
+
+char *opsi[] = {
+        (char *)"Register",
+        (char *)"Login",
+        (char *)"Exit"
+    };
+
+    int jumlahopsi =3;
+    int pilihanTerpilih = 0;
+    int pilihan = -1;
+
+    while (1) {
+        for (int i = 0; i < jumlahopsi; ++i) {
+        if (i == pilihanTerpilih) {
+            wattron(menu_win, A_REVERSE); 
+        }
+        mvwprintw(menu_win, i + 13, 40, opsi[i]);
+        if (i == pilihanTerpilih) {
+            wattroff(menu_win, A_REVERSE);
+        }
+    }
+    
+
+        int tombol = wgetch(menu_win);
+
+        switch (tombol) {
+             case KEY_UP:
+                if (pilihanTerpilih == 0) {
+                    pilihanTerpilih = jumlahopsi - 1; 
+                } else {
+                    --pilihanTerpilih; 
+                }
+                break;
+
+            case KEY_DOWN:
+                if (pilihanTerpilih == jumlahopsi - 1) {
+                    pilihanTerpilih = 0; 
+                } else {
+                    ++pilihanTerpilih;
+                }
+                break;
+
+            case 10: 
+                pilihan = pilihanTerpilih; 
+                break;
+        }
+
+        if (pilihan == 0) {
+            registration_ncurses(menu_win);
+        
+        } else if (pilihan == 1) {
+            login_ncurses(menu_win);
+            pilihan = -1;
+        } else if (pilihan == 2) {
+        	exit(0);
+            break;
+        }
+    }
+}
+
+int main() {
+    initscr();
+    keypad(stdscr, TRUE);
+    int lebar = 90, tinggi = 26;
+    int awalx = (COLS - lebar) / 2;  
+    int awaly = (LINES - tinggi) / 2;
+
+    WINDOW *menu_win = newwin(tinggi, lebar, awaly, awalx);
+    keypad(menu_win, TRUE);
+    golek(menu_win);
+    mainMenu(menu_win);
+
+    endwin();
+    return 0;
+}
