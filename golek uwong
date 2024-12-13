@@ -197,3 +197,190 @@ void drawMenu(WINDOW *menu_win) {
 			Sleep(40);
 	
 	}
+PlaySound(TEXT("C:\\Users\\admin\\Documents\\lagu4.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+	attroff(COLOR_PAIR(1));
+	clear();
+	refresh();
+          	box(menu_win, 0, 0);
+			drawMenu(menu_win); 
+			
+
+   
+        }
+        
+        refresh();
+
+        int ch = getch();
+        
+        switch (ch) {
+            case KEY_UP: 
+		if (map[level_saatini][pemainY][pemainX] == ' ' || map[level_saatini][pemainY - 1][pemainX] == '*') {
+		    movePlayer(0, -1, level_saatini);
+			}
+			break;
+            case KEY_DOWN: 
+				if (map[level_saatini][pemainY][pemainX] == ' ' || map[level_saatini][pemainY + 1][pemainX] == '*') {
+			movePlayer(0, 1, level_saatini); 
+			}
+			break;
+            case KEY_LEFT: 
+			if (map[level_saatini][pemainY][pemainX] == ' ' || map[level_saatini][pemainY][pemainX - 1] == '*') {
+			movePlayer(-1, 0, level_saatini);
+			}
+			break;
+            case KEY_RIGHT: 
+			if (map[level_saatini][pemainY][pemainX] == ' ' || map[level_saatini][pemainY][pemainX + 1] == '*') {
+                movePlayer(1, 0, level_saatini);
+            }
+            break;
+            
+        }
+
+    }
+    
+    
+}
+
+void golek(WINDOW *menu_win){
+	mvprintw(1,10, " .----------------.  .----------------.  .----------------.  .----------------.  .----------------.");
+	mvprintw(2,10, "| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |");
+	mvprintw(3,10, "| |    __    | || |     __     | || |   __      | || |  ____   | || |  _  __   | |");
+	mvprintw(4,10, "| |  .' _  |   | || |   .'    `.   | || |  |_   |     | || | |   _  |  | || | |_  ||_  _|  | |");
+	mvprintw(5,10, "| | / .'   \\|   | || |  /  .--.  \\  | || |    | |       | || |   | |  \\|  | || |   | |/ /    | |");
+	mvprintw(6,10, "| | | |    __  | || |  | |    | |  | || |    | |   _   | || |   |  |  _   | || |   |  _'.    | |");
+	mvprintw(7,10, "| | \\ `._]  | | || |  \\  `--'  /  | || |   _| |/ |  | || |  _| |_/ |  | || |  _| |  \\ \\  | |");
+	mvprintw(8,10, "| |  `.__.'   | || |   `._.'   | || |  |___|  | || | |___|  | || | |_||__| | |");
+	mvprintw(9,10, "| |              | || |              | || |              | || |              | || |              | |");
+	mvprintw(10,10,"| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |");
+	mvprintw(11,10," '----------------'  '----------------'  '----------------'  '----------------'  '----------------' ");
+	mvprintw(14,10," .----------------.  .----------------.  .----------------.  .-----------------. .----------------. ");
+	mvprintw(15,10,"| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |");
+	mvprintw(16,10,"| | __  __ | || | __  __ | || |     __     | || | __  __  | || |    ___    | |");
+	mvprintw(17,10,"| ||_   ||   || || ||   ||   || || |   .'    `.   | || ||   \\|_   | | || |  .' __  |   | |");
+	mvprintw(18,10,"| |  | |    | |  | || |  | | /\\ | |  | || |  /  .--.  \\  | || |  |   \\ | |   | || | / .'   \\_|   | |");
+	mvprintw(19,10,"| |  | '    ' |  | || |  | |/  \\| |  | || |  | |    | |  | || |  | |\\ \\| |   | || | | |    __  | |");
+	mvprintw(20,10,"| |   \\ `--' /   | || |  |   /\\   |  | || |  \\  `--'  /  | || | | |\\   |_  | || | \\ `._]  _| | |");
+	mvprintw(21,10,"| |    `._.'    | || |  |/  \\|  | || |   `._.'   | || ||__|\\_| | || |  `.___.'   | |");
+	mvprintw(22,10,"| |              | || |              | || |              | || |              | || |              | |");
+	mvprintw(23,10,"| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |");
+	mvprintw(24,10," '----------------'  '----------------'  '----------------'  '----------------'  '----------------' ");
+	
+	start_color();
+	init_pair(1,COLOR_RED,COLOR_GREEN);
+
+
+	for(int jarak = 10; jarak<= 109; jarak++){
+	attron (COLOR_PAIR(1));
+	refresh();
+	mvprintw(27,jarak, " ");
+	Sleep(20);
+}
+	attroff(COLOR_PAIR(1));
+	clear();
+	refresh();
+	endwin();
+	
+}
+
+void login_ncurses(WINDOW *menu_win) {
+    string userLog, passLog, userData, savedPassword;
+    ifstream myFile;
+    bool exist = false;
+
+    wclear(menu_win);
+    box(menu_win, 0, 0);
+    mvwprintw(menu_win, 1, 2, "---------------------------------------> LOGIN <---------------------------------------");
+
+
+    mvwprintw(menu_win, 3, 2, "Masukkan Username : ");
+    wrefresh(menu_win);
+    echo();
+    char username[50];
+    wgetstr(menu_win, username);
+    noecho();
+    userLog = username;
+
+    if (userLog.empty()) {
+        mvwprintw(menu_win, 5, 2, "Username tidak boleh kosong!");
+        wrefresh(menu_win);
+        wgetch(menu_win);
+        mainMenu(menu_win);
+    }
+
+    mvwprintw(menu_win, 5, 2, "Masukkan Password : ");
+    wrefresh(menu_win);
+    char password[50];
+    wgetstr(menu_win, password);
+    passLog = password;
+
+    if (passLog.empty()) {
+        mvwprintw(menu_win, 7, 2, "Password tidak boleh kosong!");
+        wrefresh(menu_win);
+        wgetch(menu_win);
+        mainMenu(menu_win);
+    }
+
+    myFile.open(accountsFile);
+    if (!myFile) {
+        mvwprintw(menu_win, 7, 2, "Kesalahan dalam membaca list akun!");
+        wrefresh(menu_win);
+        wgetch(menu_win);
+        mainMenu(menu_win);
+    }
+
+    while (myFile >> userData) {
+        if (userData == userLog) {
+            exist = true;
+            break;
+        }
+    }
+    myFile.close();
+    clear();
+    loading(menu_win);
+    clear();
+
+    if (!exist) {
+    	mvwprintw(menu_win, 9, 25, "------------------------------------------");
+        mvwprintw(menu_win, 10, 25, "          USERNAME TIDAK DITEMUKAN        ");
+        mvwprintw(menu_win, 11, 25, "   Silakan periksa kembali username Anda. ");
+        mvwprintw(menu_win, 12, 25, "------------------------------------------");
+        mvwprintw(menu_win, 13, 25, "     Tekan Enter untuk kembali ke menu.");
+        wrefresh(menu_win);
+        clear();
+        wgetch(menu_win);
+        mainMenu(menu_win);
+        return;
+    }
+
+   ifstream userFile(userLog + ".txt");
+    if (userFile) {
+        getline(userFile, savedPassword);
+        userFile.close();
+        clear();    
+
+	if (passLog == savedPassword) {
+            
+            wrefresh(menu_win);
+            
+            clear();
+            drawMenu(menu_win);
+            
+        } else {
+            mvwprintw(menu_win, 9, 25, "------------------------------------------");
+            mvwprintw(menu_win, 10, 25, "             PASSWORD SALAH!              ");
+            mvwprintw(menu_win, 11, 25, "     Silakan coba lagi dengan benar.");
+            mvwprintw(menu_win, 12, 25, "------------------------------------------");
+            mvwprintw(menu_win, 13, 25, "    Tekan Enter untuk kembali ke menu.");
+            wrefresh(menu_win);
+        	clear();
+        	wgetch(menu_win);
+        	mainMenu(menu_win);
+        	return;
+        }
+    } else {
+        mvwprintw(menu_win, 7, 2, "Kesalahan: File password tidak ditemukan!");
+    }
+
+    wrefresh(menu_win);
+    wgetch(menu_win);
+}
