@@ -384,3 +384,84 @@ void login_ncurses(WINDOW *menu_win) {
     wrefresh(menu_win);
     wgetch(menu_win);
 }
+
+void registration_ncurses(WINDOW *menu_win) {
+    string userReg, passReg;
+    ofstream myFile, accList;
+
+    wclear(menu_win);
+    box(menu_win, 0, 0);
+    mvwprintw(menu_win, 1, 2, "--------------------------------------> REGISTER <-------------------------------------");
+
+
+    mvwprintw(menu_win, 3, 2, "Masukkan Username : ");
+    wrefresh(menu_win);
+    echo();
+    char username[50];
+    wgetstr(menu_win, username);
+    noecho();
+    userReg = username;
+
+    if (userReg.empty()) {
+        mvwprintw(menu_win, 5, 2, "Username tidak boleh kosong!");
+        wrefresh(menu_win);
+        wgetch(menu_win);
+        mainMenu(menu_win);
+    }
+
+    mvwprintw(menu_win, 5, 2, "Masukkan Password : ");
+    wrefresh(menu_win);
+    char password[50];
+    wgetstr(menu_win, password);
+    passReg = password;
+
+    if (passReg.empty()) {
+        mvwprintw(menu_win, 7, 2, "Password tidak boleh kosong!");
+        wrefresh(menu_win);
+        wgetch(menu_win);
+        mainMenu(menu_win);
+    }
+
+    myFile.open(userReg + ".txt");
+    if (!myFile) {
+        mvwprintw(menu_win, 7, 2, "Kesalahan dalam membuat file!");
+        wrefresh(menu_win);
+        wgetch(menu_win);
+        mainMenu(menu_win);
+    }
+    myFile << passReg; 
+    myFile.close();
+    loading(menu_win);
+    clear();
+
+    accList.open(accountsFile, ios::app);
+    if (!accList) {
+        mvwprintw(menu_win, 7, 2, "Kesalahan dalam menambahkan list akun");
+        wrefresh(menu_win);
+        wgetch(menu_win);
+        mainMenu(menu_win);
+    }
+    accList << userReg << endl;
+    accList.close();
+
+    mvwprintw(menu_win, 5, 2, "Registrasi Berhasil!");
+    mvwprintw(menu_win, 7, 2, "Tekan Enter untuk kembali ke menu.");
+    wrefresh(menu_win);
+    wgetch(menu_win);
+    mainMenu(menu_win);
+}
+
+void mainMenu(WINDOW *menu_win) {
+    PlaySound(TEXT("C:\\Users\\admin\\Documents\\lagu4.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    
+    clear();
+   
+    wclear(menu_win);
+    box(menu_win, 0, 0);
+
+    mvwprintw(menu_win,2,28," __  __   ______   _   _   _    _");
+    mvwprintw(menu_win,3,28,"|  \\/  | |  ____| | \\ | | | |  | |");
+    mvwprintw(menu_win,4,28,"| \\  / | | |__    |  \\| | | |  | |");
+    mvwprintw(menu_win,5,28,"| |\\/| | |  __|   | . ` | | |  | |");
+    mvwprintw(menu_win,6,28,"| |  | | | |____  | |\\  | | || |");
+    mvwprintw(menu_win,7,28,"||  || || || \\|  \\/ ");
